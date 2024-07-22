@@ -1,0 +1,51 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        バグの報告
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: バグの内容
+      description: どのようなバグが起きたのか、どのような手順でバグが起きたのか、どのような動作を求めているのかをここに書きます
+      placeholder: |
+        # バグの内容
+        ジャンプ後に特定の操作を行うと再度ジャンプができる
+        
+        # バグの手順
+        1. Xボタン押下
+        2. Zボタンを押下
+        3. 再度Xボタンを押下
+
+        # 期待する動作
+        どのような操作を行っても一度しかジャンプしない
+      value: |
+        # バグの内容
+
+        # バグの手順
+
+        # 期待する動作
+        
+    validations:
+      required: true
+  - type: dropdown
+    id: level
+    attributes:
+      label: 緊急度
+      description: | 
+        緊急: 発生頻度が高いかつ進行不能、クラッシュ、フリーズなどゲームそのものをプレイできない致命的な問題の場合
+        高: 発生頻度が高いかつ緊急に当てはまらない問題、ゲームの体験を著しく損なう、壊滅的なプレイが可能などの場合 
+        中: 発生頻度が低いがゲームのプレイに何かしら影響のある場合
+        低: ゲームのプレイに影響がない、発生条件が特殊かつゲームの進行上問題がないなど最悪無視しても問題がない場合
+      options:
+        - 緊急
+        - 高
+        - 中
+        - 低
+      default: 2
+    validations:
+      required: true
