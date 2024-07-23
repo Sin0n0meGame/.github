@@ -19,7 +19,6 @@ jobs:
       id: add_label
       run: |
         node -e "
-          const core = require('@actions/core');
           const issueBody = process.env.ISSUE_BODY;
           let label = '';
 
