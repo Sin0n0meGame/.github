@@ -48,4 +48,4 @@ jobs:
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: ${{ steps.check_content.outputs.label }}
+          labels: ${{ toJson(steps.check_content.outputs.result) }}
