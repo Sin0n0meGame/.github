@@ -7,7 +7,8 @@ on:
 jobs:
   label_issue:
     runs-on: ubuntu-latest
-
+    permissions:
+      issues: write
     steps:
       - name: Check Issue Content
         id: check_content
@@ -40,12 +41,8 @@ jobs:
 
             return "";
 
-      - name: Check Label Output
-        run: echo "Label output is ${{ toJson(steps.check_content.outputs.result) }}"
-
-      - name: Add Label
-        if: ${{ toJson(steps.check_content.outputs.result) }} != ''
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: ${{ toJson(steps.check_content.outputs.result) }}
+      - run: gh issue edit "$NUMBER" --add-label ${{ toJson(steps.check_content.outputs.result) }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
