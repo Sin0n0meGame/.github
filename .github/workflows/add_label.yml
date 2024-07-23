@@ -13,32 +13,30 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set up Node.js environment
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
 
-    - name: Add Label Based on Issue Content
+    - name: Add Label Issue Content
       id: add_label
       run: |
-        const issueBody = process.env.ISSUE_BODY;
-        let label = '';
+        node -e "
+          const core = require('@actions/core');
+          const issueBody = process.env.ISSUE_BODY;
+          let label = '';
 
-        if (issueBody.includes('### 緊急度\n\n緊急')) {
-          label = '緊急';
-        } else if (issueBody.includes('### 緊急度\n\n高')) {
-          label = '優先度: 高';
-        } else if (issueBody.includes('### 緊急度\n\n中')) {
-          label = '優先度: 中';
-        } else if (issueBody.includes('### 緊急度\n\n低')) {
-          label = '優先度: 低';
-        }
+          if (issueBody.includes('### 緊急度\n\n緊急')) {
+            label = '緊急';
+          } else if (issueBody.includes('### 緊急度\n\n高')) {
+            label = '優先度: 高';
+          } else if (issueBody.includes('### 緊急度\n\n中')) {
+            label = '優先度: 中';
+          } else if (issueBody.includes('### 緊急度\n\n低')) {
+            label = '優先度: 低';
+          }
 
-        console.log(`Label to add: ${label}`);
-        if (label) {
-          core.setOutput('label', label);
-        } else {
-          console.log('No matching label found.');
-          core.setOutput('label', '');
-        }
-
+          if (label) {
+            core.setOutput('label', label);
+          }
+        "
       env:
         ISSUE_BODY: ${{ github.event.issue.body }}
 
