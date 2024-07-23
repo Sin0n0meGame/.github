@@ -16,9 +16,11 @@ jobs:
           script: |
             const issueBody = context.payload.issue.body;
             const priorityMatch = issueBody.match(/### 緊急度\s*\n\s*(緊急|高|中|低)/);
-
+            console.log('Issue Body:', issueBody);
+            console.log('Match:', priorityMatch);
+            
             if (priorityMatch) {
-              const priority = priorityMatch[0];
+              const priority = priorityMatch[1];
               let label = '';
 
               switch(priority) {
@@ -35,6 +37,7 @@ jobs:
                   label = '優先度: 低';
                   break;
               }
+              console.log('label:', label);
               return { label };
             }
 
