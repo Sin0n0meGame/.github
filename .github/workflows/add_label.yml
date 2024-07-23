@@ -16,8 +16,6 @@ jobs:
           script: |
             const issueBody = context.payload.issue.body;
             const priorityMatch = issueBody.match(/### 緊急度\s*\n\s*(緊急|高|中|低)/);
-            console.log('Issue Body:', issueBody);
-            console.log('Match:', priorityMatch);
             
             if (priorityMatch) {
               const priority = priorityMatch[1];
@@ -37,17 +35,16 @@ jobs:
                   label = '優先度: 低';
                   break;
               }
-              console.log('label:', label);
               return { label };
             }
 
             return { label: '' };
 
       - name: Check Label Output
-        run: echo "Label output is ${{ steps.check_content.outputs.label }}"
+        run: echo "Label output is ${{ steps.check_content.outputs.result }}"
 
       - name: Add Label
-        if: steps.check_content.outputs.label != ''
+        if: steps.check_content.outputs.result != ''
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
