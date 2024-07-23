@@ -35,16 +35,16 @@ jobs:
                   label = '優先度: 低';
                   break;
               }
-              return { label };
+              return label;
             }
 
-            return { label: '' };
+            return "";
 
       - name: Check Label Output
-        run: echo "Label output is ${{ steps.check_content.outputs.result }}"
+        run: echo "Label output is ${{ toJson(steps.check_content.outputs.result) }}"
 
       - name: Add Label
-        if: steps.check_content.outputs.result != ''
+        if: ${{ toJson(steps.check_content.outputs.result) }} != ''
         uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
