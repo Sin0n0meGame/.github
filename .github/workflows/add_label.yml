@@ -43,6 +43,9 @@ jobs:
 
             return { label: '' };
 
+      - name: Check Label Output
+        run: echo "Label output is ${{ steps.check_content.outputs.label }}"
+
       - name: Add Label
         if: steps.check_content.outputs.label != ''
         uses: actions-ecosystem/action-add-labels@v1
