@@ -21,7 +21,6 @@ jobs:
             
             // Define the regex to extract the priority
             const priorityMatch = body.match(/### (緊急度|優先度)\s*\n\s*(緊急|高|中|低)/);
-            console.log(priorityMatch);
             
             if (!priorityMatch) {
               console.log('no edit because not match.');
@@ -41,6 +40,9 @@ jobs:
             const priorityLabels = ['緊急', '優先度: 高', '優先度: 中', '優先度: 低'];
             const labelsToRemove = currentLabels.filter(label => priorityLabels.includes(label) && label !== newLabel);
 
+            console.log(newLabel);
+            console.log(labelsToRemove);
+            
             return { newLabel, labelsToRemove };
           result-encoding: string
 
