@@ -54,7 +54,7 @@ jobs:
           result="${{ steps.determine_labels.outputs.result }}"
           echo "Result from script: $result"
 
-          # Parse the JSON result
+          # Parse the JSON result using jq
           new_label=$(echo "$result" | jq -r '.newLabel')
           labels_to_remove=$(echo "$result" | jq -r '.labelsToRemove | join(" ")')
           issue_number=${{ github.event.issue.number }}
