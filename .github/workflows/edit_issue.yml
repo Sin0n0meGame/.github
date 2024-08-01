@@ -40,7 +40,7 @@ jobs:
             const priorityLabels = ['緊急', '優先度: 高', '優先度: 中', '優先度: 低'];
             const labelsToRemove = currentLabels.filter(label => priorityLabels.includes(label) && label !== newLabel);
             
-            return { [newLabel, labelsToRemove] };
+            return { new: newLabel, remove: labelsToRemove };
           result-encoding: string
 
       - name: Update labels
@@ -48,8 +48,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          labels_to_remove="${{ steps.determine_labels.outputs.result[0] }}"
-          new_label="${{ steps.determine_labels.outputs.result[1] }}"
+          labels_to_remove="${{ steps.determine_labels.outputs.result.new }}"
+          new_label="${{ steps.determine_labels.outputs.result.remove }}"
           issue_number="${{ github.event.issue.number }}"
 
           echo "${{ steps.determine_labels.outputs.result }}"
