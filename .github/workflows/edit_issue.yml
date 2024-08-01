@@ -43,15 +43,14 @@ jobs:
             return JSON.stringify({ newLabel, labelsToRemove });
           result-encoding: string
 
-      - name: Install jq
-        run: sudo apt-get install -y jq
-
       - name: Update labels
         if: steps.determine_labels.outputs.result != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           result=${{ steps.determine_labels.outputs.result }}
+          echo "Labels to remove: $result"
+          
           new_label=$(echo $result | jq -r '.newLabel')
           labels_to_remove=$(echo $result | jq -r '.labelsToRemove | join(" ")')
           issue_number=${{ github.event.issue.number }}
