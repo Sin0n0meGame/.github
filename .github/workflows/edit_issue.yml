@@ -26,7 +26,7 @@ jobs:
               return { newLabel: '', labelsToRemove: [] };
             }
             
-            const urgency = priorityMatch[1];
+            const urgency = priorityMatch[2];
             const labelMap = {
               '緊急': '緊急',
               '高': '優先度: 高',
