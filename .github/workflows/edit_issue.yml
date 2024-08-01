@@ -39,9 +39,6 @@ jobs:
             const newLabel = labelMap[urgency];
             const priorityLabels = ['緊急', '優先度: 高', '優先度: 中', '優先度: 低'];
             const labelsToRemove = currentLabels.filter(label => priorityLabels.includes(label) && label !== newLabel);
-
-            console.log(newLabel);
-            console.log(labelsToRemove);
             
             return { newLabel, labelsToRemove };
           result-encoding: string
@@ -54,6 +51,10 @@ jobs:
           labels_to_remove="${{ steps.determine_labels.outputs.result[0] }}"
           new_label="${{ steps.determine_labels.outputs.result[1] }}"
           issue_number="${{ github.event.issue.number }}"
+
+          echo "Labels to remove: $labels_to_remove"
+          echo "New label to add: $new_label"
+          echo "Issue number: $issue_number"
 
           # remove label
           for label in ${labels_to_remove[@]}; do
