@@ -30,9 +30,9 @@ jobs:
             const urgency = priorityMatch[2];
             const labelMap = {
               '緊急': '緊急',
-              '高': '優先度: 高',
-              '中': '優先度: 中',
-              '低': '優先度: 低'
+              '高': '"優先度: 高"',
+              '中': '"優先度: 中"',
+              '低': '"優先度: 低"'
             };
 
             const currentLabels = issue.labels.map(label => label.name);
@@ -49,21 +49,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           result='${{ steps.determine_labels.outputs.result }}'
-          echo "Labels to remove: $result"
-          
           new_label=$(echo "$result" | jq -r '.newLabel')
           labels_to_remove=$(echo "$result" | jq -r '.labelsToRemove | join(" ")')
           issue_number=${{ github.event.issue.number }}
 
           # remove labels
           for label in $labels_to_remove; do
-            echo "Removing label: $label"
+            echo "removing label: $new_label"
             gh issue edit $issue_number --remove-label "$label"
           done
 
           # add new label
           if [ -n "$new_label" ]; then
-            echo "Adding label: $new_label"
+            echo "adding label: $new_label"
             gh issue edit $issue_number --add-label "$new_label"
           fi
           
