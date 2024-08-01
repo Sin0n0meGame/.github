@@ -8,14 +8,6 @@ jobs:
   update-labels:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
       - name: Determine labels
         id: determine_labels
         uses: actions/github-script@v6
@@ -26,6 +18,7 @@ jobs:
             
             // Define the regex to extract the priority
             const priorityMatch = body.match(/### (緊急度|優先度)\s*\n\s*(緊急|高|中|低)/);
+            console.log(priorityMatch);
             if (!priorityMatch) {
               return { newLabel: '', labelsToRemove: [] };
             }
