@@ -5,9 +5,9 @@ on:
     types: [edited]
 
 jobs:
-  permissions:
-    contents: write
   update-labels:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Determine labels
