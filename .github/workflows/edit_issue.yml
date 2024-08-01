@@ -47,7 +47,7 @@ jobs:
           result-encoding: string
 
       - name: Update labels
-        if: steps.determine_labels.outputs.newLabel != ''
+        if: steps.determine_labels.outputs.result != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
