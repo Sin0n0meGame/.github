@@ -51,15 +51,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          labels_to_remove="${{ steps.determine_labels.outputs.labelsToRemove }}"
-          new_label="${{ steps.determine_labels.outputs.newLabel }}"
+          labels_to_remove="${{ steps.determine_labels.outputs.result }}"
+          new_label="${{ steps.determine_labels.outputs.result }}"
           issue_number="${{ github.event.issue.number }}"
 
-          # Remove existing priority labels
+          # remove label
           for label in ${labels_to_remove[@]}; do
             gh issue edit $issue_number --remove-label "$label"
           done
 
-          # Add the new label
+          # add label
           gh issue edit $issue_number --add-label "$new_label"
 
