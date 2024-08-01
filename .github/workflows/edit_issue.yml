@@ -51,8 +51,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          labels_to_remove="${{ steps.determine_labels.outputs.result }}"
-          new_label="${{ steps.determine_labels.outputs.result }}"
+          labels_to_remove="${{ steps.determine_labels.outputs.result[0] }}"
+          new_label="${{ steps.determine_labels.outputs.result[1] }}"
           issue_number="${{ github.event.issue.number }}"
 
           # remove label
