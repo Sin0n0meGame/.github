@@ -22,6 +22,10 @@ jobs:
             // Define the regex to extract the priority
             const priorityMatch = body.match(/### (緊急度|優先度)\s*\n\s*(緊急|高|中|低)/);
             console.log(priorityMatch);
+            console.log(priorityMatch[0]);
+            console.log(priorityMatch[1]);
+            console.log(priorityMatch[2]);
+            
             if (!priorityMatch) {
               return { newLabel: '', labelsToRemove: [] };
             }
