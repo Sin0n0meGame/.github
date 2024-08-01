@@ -40,7 +40,7 @@ jobs:
             const priorityLabels = ['緊急', '優先度: 高', '優先度: 中', '優先度: 低'];
             const labelsToRemove = currentLabels.filter(label => priorityLabels.includes(label) && label !== newLabel);
             
-            return [newLabel, labelsToRemove];
+            return JSON.stringify({ newLabel, labelsToRemove });
           result-encoding: string
 
       - name: Update labels
@@ -48,20 +48,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          labels_to_remove="${{ steps.determine_labels.outputs.result[0] }}"
-          new_label="${{ steps.determine_labels.outputs.result[1] }}"
-          issue_number="${{ github.event.issue.number }}"
+          result=${{ steps.determine_labels.outputs.result }}
+          echo "Result from script: $result"
 
-          echo "${{ steps.determine_labels.outputs.result }}"
-          echo "Labels to remove: ${{ steps.determine_labels.outputs.result[1] }}"
-          echo "New label to add: ${{ steps.determine_labels.outputs.result[0] }}"
+          new_label=$(echo $result | jq -r '.newLabel')
+          labels_to_remove=$(echo $result | jq -r '.labelsToRemove | join(" ")')
+          issue_number=${{ github.event.issue.number }}
+
+          echo "Labels to remove: $labels_to_remove"
+          echo "New label to add: $new_label"
           echo "Issue number: $issue_number"
 
-          # remove label
-          for label in ${labels_to_remove[@]}; do
+          # remove labels
+          for label in $labels_to_remove; do
+            echo "Removing label: $label"
             gh issue edit $issue_number --remove-label "$label"
           done
 
-          # add label
-          gh issue edit $issue_number --add-label "$new_label"
-
+          # add new label
+          if [ -n "$new_label" ]; then
+            echo "Adding label: $new_label"
+            gh issue edit $issue_number --add-label "$new_label"
+          fi
+          
