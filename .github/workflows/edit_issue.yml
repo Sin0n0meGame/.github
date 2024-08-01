@@ -8,8 +8,7 @@ jobs:
   update-labels:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v4
+
         
       - name: Determine labels
         id: determine_labels
@@ -46,7 +45,8 @@ jobs:
       - name: Update labels
         if: steps.determine_labels.outputs.result != ''
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           result='${{ steps.determine_labels.outputs.result }}'
           new_label=$(echo "$result" | jq -r '.newLabel')
