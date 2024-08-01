@@ -52,6 +52,7 @@ jobs:
           new_label="${{ steps.determine_labels.outputs.result[1] }}"
           issue_number="${{ github.event.issue.number }}"
 
+          echo "${{ steps.determine_labels.outputs.result }}"
           echo "Labels to remove: $labels_to_remove"
           echo "New label to add: $new_label"
           echo "Issue number: $issue_number"
