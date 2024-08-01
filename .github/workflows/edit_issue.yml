@@ -48,7 +48,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          result=${{ steps.determine_labels.outputs.result }}
+          result='${{ steps.determine_labels.outputs.result }}'
           echo "Labels to remove: $result"
           
           new_label=$(echo "$result" | jq -r '.newLabel')
