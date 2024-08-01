@@ -5,6 +5,8 @@ on:
     types: [edited]
 
 jobs:
+  permisspermission:
+    contents: write
   update-labels:
     runs-on: ubuntu-latest
     steps:
