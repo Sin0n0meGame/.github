@@ -12,7 +12,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const issue = github.context.payload.issue;
+            const issue = context.payload.issue;
             const body = issue.body || '';
             
             const priorityMatch = body.match(/### (緊急度|優先度)\s*(緊急|高|中|低)/);
