@@ -37,7 +37,7 @@ jobs:
 
             const currentLabels = issue.labels.map(label => label.name);
             const newLabel = labelMap[urgency];
-            const priorityLabels = ['緊急', '優先度: 高', '優先度: 中', '優先度: 低'];
+            const priorityLabels = ['緊急', '"優先度: 高"', '"優先度: 中"', '"優先度: 低"'];
             const labelsToRemove = currentLabels.filter(label => priorityLabels.includes(label) && label !== newLabel);
             
             return JSON.stringify({ newLabel, labelsToRemove });
