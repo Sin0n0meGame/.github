@@ -43,25 +43,33 @@ jobs:
             return JSON.stringify({ newLabel, labelsToRemove });
           result-encoding: string
 
+      - name: Install jq
+        run: sudo apt-get install jq
+
       - name: Update labels
         if: steps.determine_labels.outputs.result != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           result="${{ steps.determine_labels.outputs.result }}"
-          echo "Labels to remove: $result"
-          
-          new_label=$(echo $result | jq -r '.newLabel')
-          labels_to_remove=$(echo $result | jq -r '.labelsToRemove | join(" ")')
+          echo "Result from script: $result"
+
+          # Parse the JSON result
+          new_label=$(echo "$result" | jq -r '.newLabel')
+          labels_to_remove=$(echo "$result" | jq -r '.labelsToRemove | join(" ")')
           issue_number=${{ github.event.issue.number }}
 
-          # remove labels
+          echo "Labels to remove: $labels_to_remove"
+          echo "New label to add: $new_label"
+          echo "Issue number: $issue_number"
+
+          # Remove existing priority labels
           for label in $labels_to_remove; do
             echo "Removing label: $label"
             gh issue edit $issue_number --remove-label "$label"
           done
 
-          # add new label
+          # Add the new label
           if [ -n "$new_label" ]; then
             echo "Adding label: $new_label"
             gh issue edit $issue_number --add-label "$new_label"
