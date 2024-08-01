@@ -1,0 +1,60 @@
+name: Update Issue Labels
+
+on:
+  issues:
+    types: [edited]
+
+jobs:
+  update-labels:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check issue body for urgency level
+        id: check-urgency
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueBody = context.payload.issue.body;
+            const urgencyRegex = /### (緊急度|優先度)\s*(緊急|高|中|低)/;
+            const match = issueBody.match(urgencyRegex);
+            if (match) {
+              return match[1];
+            } else {
+              return null;
+            }
+          result-encoding: string
+
+      - name: Remove existing priority labels
+        if: steps.check-urgency.outputs.result != null
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const labelsToRemove = ['緊急', '優先度: 高', '優先度: 中', '優先度: 低'];
+            const currentLabels = context.payload.issue.labels.map(label => label.name);
+            const labelsToKeep = currentLabels.filter(label => !labelsToRemove.includes(label));
+
+            await github.rest.issues.update({
+              ...context.repo,
+              issue_number: context.payload.issue.number,
+              labels: labelsToKeep
+            });
+
+      - name: Add new priority label
+        if: steps.check-urgency.outputs.result != null
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const urgency = steps.check-urgency.outputs.result;
+            const labelMap = {
+              '緊急': '緊急',
+              '高': '優先度: 高',
+              '中': '優先度: 中',
+              '低': '優先度: 低'
+            };
+            const newLabel = labelMap[urgency];
+
+            await github.rest.issues.addLabels({
+              ...context.repo,
+              issue_number: context.payload.issue.number,
+              labels: [newLabel]
+            });
