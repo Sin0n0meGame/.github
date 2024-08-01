@@ -8,6 +8,9 @@ jobs:
   update-labels:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        
       - name: Determine labels
         id: determine_labels
         uses: actions/github-script@v6
