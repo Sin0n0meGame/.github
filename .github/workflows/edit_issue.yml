@@ -8,16 +8,26 @@ jobs:
   update-labels:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Issue Body for Labels
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Determine labels
+        id: determine_labels
         uses: actions/github-script@v6
         with:
           script: |
             const issue = context.payload.issue;
             const body = issue.body || '';
             
+            // Define the regex to extract the priority
             const priorityMatch = body.match(/### (緊急度|優先度)\s*(緊急|高|中|低)/);
             if (!priorityMatch) {
-              return;
+              return { newLabel: '', labelsToRemove: [] };
             }
             
             const urgency = priorityMatch[1];
@@ -30,23 +40,26 @@ jobs:
 
             const currentLabels = issue.labels.map(label => label.name);
             const newLabel = labelMap[urgency];
-            
-            // remove
             const priorityLabels = ['緊急', '優先度: 高', '優先度: 中', '優先度: 低'];
-            const labelsToRemove = currentLabels.filter(label => priorityLabels.includes(label));
+            const labelsToRemove = currentLabels.filter(label => priorityLabels.includes(label) && label !== newLabel);
 
-            // add
-            const labelsToAdd = currentLabels.filter(label => !priorityLabels.includes(label));
-            if (!currentLabels.includes(newLabel)) {
-              labelsToAdd.push(newLabel);
-            }
+            return { newLabel, labelsToRemove };
+          result-encoding: string
 
-            // update
-            await github.rest.issues.setLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              labels: labelsToAdd
-            });
+      - name: Update labels
+        if: steps.determine_labels.outputs.newLabel != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          labels_to_remove="${{ steps.determine_labels.outputs.labelsToRemove }}"
+          new_label="${{ steps.determine_labels.outputs.newLabel }}"
+          issue_number="${{ github.event.issue.number }}"
 
-            console.log(`Updated labels: ${labelsToAdd.join(', ')}`);
+          # Remove existing priority labels
+          for label in ${labels_to_remove[@]}; do
+            gh issue edit $issue_number --remove-label "$label"
+          done
+
+          # Add the new label
+          gh issue edit $issue_number --add-label "$new_label"
+
