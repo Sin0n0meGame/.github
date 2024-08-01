@@ -49,15 +49,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           result=${{ steps.determine_labels.outputs.result }}
-          echo "Result from script: $result"
-
           new_label=$(echo $result | jq -r '.newLabel')
           labels_to_remove=$(echo $result | jq -r '.labelsToRemove | join(" ")')
           issue_number=${{ github.event.issue.number }}
-
-          echo "Labels to remove: $labels_to_remove"
-          echo "New label to add: $new_label"
-          echo "Issue number: $issue_number"
 
           # remove labels
           for label in $labels_to_remove; do
