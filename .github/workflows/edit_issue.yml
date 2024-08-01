@@ -40,8 +40,11 @@ jobs:
             const priorityLabels = ['緊急', '優先度: 高', '優先度: 中', '優先度: 低'];
             const labelsToRemove = currentLabels.filter(label => priorityLabels.includes(label) && label !== newLabel);
             
-            return { newLabel, labelsToRemove };
+            return JSON.stringify({ newLabel, labelsToRemove });
           result-encoding: string
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
 
       - name: Update labels
         if: steps.determine_labels.outputs.result != ''
