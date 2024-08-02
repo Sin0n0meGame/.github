@@ -59,7 +59,7 @@ jobs:
           
           echo "$labels_to_remove"
           for label in ${remove_labels}; do
-            echo "removing label: $label"
+            echo "removing label: ${label//,/ }"
             gh issue edit $issue_number --remove-label "${label//,/ }"
           done
 
