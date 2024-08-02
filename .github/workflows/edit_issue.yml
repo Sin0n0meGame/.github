@@ -51,7 +51,7 @@ jobs:
         run: |
           result='${{ steps.determine_labels.outputs.result }}'
           new_label=$(echo "$result" | jq -r '.newLabel')
-          labels_to_remove=$(echo "$result" | jq -r '.labelsToRemove | join(" ")')
+          labels_to_remove="$(echo "$result" | jq -r '.labelsToRemove | join(" ")')"
 
           # remove labels
           echo "$labels_to_remove"
