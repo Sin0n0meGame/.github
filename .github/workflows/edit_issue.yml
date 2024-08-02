@@ -51,11 +51,14 @@ jobs:
         run: |
           result='${{ steps.determine_labels.outputs.result }}'
           new_label=$(echo "$result" | jq -r '.newLabel')
-          labels_to_remove=$(echo "$result" | jq -r '.labelsToRemove | join(" ")')
+          formatted_remove_labels=$(echo "$result" | jq -r '.labelsToRemove | join("_")')
 
           # remove labels
+          replace_space="${formatted_remove_labels// /,}"
+          remove_labels="${replace_space//_/ }"
+          
           echo "$labels_to_remove"
-          for label in ${labels_to_remove// /,}; do
+          for label in ${remove_labels}; do
             echo "removing label: $label"
             gh issue edit $issue_number --remove-label "${label//,/ }"
           done
